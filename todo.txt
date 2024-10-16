@@ -1,0 +1,11 @@
+# PIXEL ART
+- Create pixel art for player animations
+- Create pixel art for enemies
+- Create pixel art decors
+- Create particles for bullet explosion/kill
+
+# CODING
+- Code collisions for player and surrounding tiles
+- Code enemy ai
+- Code level editor to place all tiles
+- Make projectile bounce off the walls and create a spark
