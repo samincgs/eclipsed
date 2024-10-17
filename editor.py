@@ -19,6 +19,7 @@ class Editor:
         self.assets = {
             'bricks': load_images('tiles/bricks'),
             'decor': load_images('tiles/decor'),
+            'spawners': load_images('tiles/spawners')
         }
         
         self.tilemap = Tilemap(self, tile_size=12)

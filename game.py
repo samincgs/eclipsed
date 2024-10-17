@@ -1,5 +1,6 @@
 import pygame
 import sys
+import time
 
 from scripts.utils import load_image, load_images
 from scripts.entities import Player
@@ -30,6 +31,7 @@ class Game:
             'projectile': load_image('projectile.png'),
             'small_font': Font('data/fonts/small_font.png', (255, 255, 255)),
             'large_font': Font('data/fonts/large_font.png'),
+            'spawners': load_images('tiles/spawners'),
         }
         
         self.player = Player(self, (50, 50), self.assets['player/'].img.get_size())
@@ -41,19 +43,25 @@ class Game:
         self.scroll = [0, 0]
         
         self.projectiles = []
-        self.enemies = [Enemy(self, 'slime', (220, 50), (9, 8))]
+        self.enemies = []
+         
+        self.tilemap.load(0)
         
-        
-        try:
-            self.tilemap.load(0)
-        except FileNotFoundError:
-            pass
+        for entity in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
+            if entity['variant'] == 0:
+                self.player.pos = entity['pos']
+            else:
+                self.enemies.append(Enemy(self, 'slime', entity['pos'], self.assets['slime/'].img.get_size()))
 
+    def draw_ui(self, surf):
+        self.assets['small_font'].render(surf, f'Health: {self.player.health}', (3, 5))
+        self.assets['small_font'].render(surf, f'FPS: {int(self.clock.get_fps())}', (surf.get_width() - 30 , 5))
+    
     def run(self):
         while True:
             self.display.fill('#1e1320') # dark purple background
             
-            self.assets['small_font'].render(self.display, f'Health: {self.player.health}', (3, 5))
+            self.draw_ui(self.display)
             
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
@@ -67,10 +75,13 @@ class Game:
             for enemy in self.enemies.copy():
                 if enemy.death_timer > 15:
                     self.enemies.remove(enemy)
-                enemy.update(self.tilemap)
+                if not enemy.killed:
+                    enemy.update(self.tilemap)
+                else:
+                    enemy.death_timer +=1
                 enemy.render(self.display, offset=render_scroll)
             
-            # [[x, y], direction, timer]
+            # [[x, y], direction]
             for projectile in self.projectiles.copy():
                 projectile[0][0] += projectile[1] * 3
                 projectile[2] += 1 # increase the timer
@@ -80,7 +91,7 @@ class Game:
                     if enemy.rect().collidepoint(projectile[0]):
                         enemy.health -= 1
                         self.projectiles.remove(projectile)
-                if projectile[2] > 180: # remove the projectile after it reaches 3 secs
+                if projectile[2] > 90: # remove the projectile after it reaches 3 secs
                     self.projectiles.remove(projectile)
                 
             for event in pygame.event.get():
@@ -99,8 +110,8 @@ class Game:
                         self.movement[1] = True
                     if event.key == pygame.K_z:
                         self.player.shoot()
-                    # if event.key == pygame.K_z:
-                    #     self.player.dash()
+                    if event.key == pygame.K_x:
+                        self.player.dash()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_RIGHT:
                         self.movement[0] = False
@@ -110,6 +121,7 @@ class Game:
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
             self.clock.tick(60)
+            
                        
 if __name__ == '__main__':
     game = Game()

@@ -95,12 +95,12 @@ class Player(PhysicsEntity):
             self.jumps = max(0, self.jumps - 1)
             self.velocity[1] = -2
     
-    # def dash(self):
-    #     if not self.dashing:
-    #         if self.flip:
-    #             self.dashing = -40
-    #         else:
-    #             self.dashing = 40
+    def dash(self):
+        if not self.dashing:
+            if self.flip:
+                self.dashing = -40
+            else:
+                self.dashing = 40
                 
     
     def shoot(self):
@@ -129,19 +129,20 @@ class Player(PhysicsEntity):
         else:
             self.set_action()
         
+        print(self.dashing)
         
-        # if self.dashing > 0:
-        #     self.dashing = max(self.dashing - 1, 0)
-        # else:
-        #     self.dashing = min(self.dashing + 1, 0)
+        if self.dashing > 0:
+            self.dashing = max(self.dashing - 1, 0)
+        else:
+            self.dashing = min(self.dashing + 1, 0)
         
-        # if abs(self.dashing) > 35:
-        #     self.velocity[0] = abs(self.dashing) / self.dashing * 5
-        # else:
-        #     if self.dashing > 0:
-        #         self.velocity[0] = max(self.velocity[0] - 0.5, 0)
-        #     else:
-        #         self.velocity[0] = min(self.velocity[0] + 0.5, 0) 
+        if abs(self.dashing) > 35:
+            self.velocity[0] = abs(self.dashing) / self.dashing * 5
+        else:
+            if self.dashing > 0:
+                self.velocity[0] = max(self.velocity[0] - 0.5, 0)
+            else:
+                self.velocity[0] = min(self.velocity[0] + 0.5, 0) 
                 
             
             

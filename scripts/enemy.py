@@ -14,37 +14,35 @@ class Enemy(PhysicsEntity):
         
     def update(self, tilemap, movement=(0, 0)):
          
-        if not self.killed:
-            super().update(tilemap, movement=movement)
-            dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
-            if dis[0] < 0:
-                self.flip = True
-            elif dis[0] > 0:
-                self.flip = False
-            
-            if self.game.player.rect().colliderect(self.rect()):
-                if not self.damage_cooldown:
-                    self.game.player.health -= 1
-                    self.damage_cooldown = 60
-            
-            if abs(dis[1]) < self.aggro_radius[1] and abs(dis[0]) < self.aggro_radius[0]:
-                if dis[0] >= 0:
-                    self.velocity[0] = self.acceleration
-                elif dis[0] < 0:
-                    self.velocity[0] = -self.acceleration   
-            else:
-                self.velocity[0] = 0  
-                
-            if self.health <= 0:
-                self.killed = True
-                self.death_timer = 1
-                    
-            if self.damage_cooldown > 0:
-                self.damage_cooldown -= 1  
+        super().update(tilemap, movement=movement)
+        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
+        if dis[0] < 0:
+            self.flip = True
+        elif dis[0] > 0:
+            self.flip = False
+        
+        if self.game.player.rect().colliderect(self.rect()):
+            if not self.damage_cooldown:
+                self.game.player.health -= 1
+                self.damage_cooldown = 60
+        
+        if abs(dis[1]) < self.aggro_radius[1] and abs(dis[0]) < self.aggro_radius[0]:
+            if dis[0] >= 0:
+                self.velocity[0] = self.acceleration
+            elif dis[0] < 0:
+                self.velocity[0] = -self.acceleration   
         else:
-            self.death_timer += 1
+            self.velocity[0] = 0  
+            
+        if self.health <= 0:
+            self.killed = True
+            self.death_timer = 1
+        
+        if self.damage_cooldown:
+            self.damage_cooldown -=1
                 
-    
+        
+            
     def health_bar(self, surf, offset=(0, 0)):
         health_ratio = self.health / self.max_health
         bar_width = 8
