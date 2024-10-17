@@ -101,8 +101,7 @@ class Player(PhysicsEntity):
                 self.dashing = -40
             else:
                 self.dashing = 40
-                
-    
+                 
     def shoot(self):
         bullet_dis = 4
         if self.shoot_time >= 25:
@@ -128,8 +127,6 @@ class Player(PhysicsEntity):
             self.set_action('walk')
         else:
             self.set_action()
-        
-        print(self.dashing)
         
         if self.dashing > 0:
             self.dashing = max(self.dashing - 1, 0)

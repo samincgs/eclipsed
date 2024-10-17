@@ -22,8 +22,7 @@ class Font:
                 current_char_width += 1
         
         self.space_width = self.characters['A'].get_width()
-                
-                
+                          
     def render(self, surf, text, loc):
         x_offset = 0
         for char in text:

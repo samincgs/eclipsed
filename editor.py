@@ -19,7 +19,7 @@ class Editor:
         self.assets = {
             'bricks': load_images('tiles/bricks'),
             'decor': load_images('tiles/decor'),
-            'spawners': load_images('tiles/spawners')
+            'spawners': load_images('tiles/spawners'),
         }
         
         self.tilemap = Tilemap(self, tile_size=12)
@@ -126,7 +126,7 @@ class Editor:
                     if event.button == 3:
                         self.right_click = True
                     if event.button == 4: # scroll up
-                        self.tile_variant = (self.tile_variant - 1) % len(self.blocks[self.tile_group])    
+                        self.tile_variant = (self.tile_variant + 1) % len(self.assets[self.blocks[self.tile_group]])  
                         if self.shift:
                             self.tile_variant = 0
                             self.tile_group = (self.tile_group - 1) % len(self.blocks)
