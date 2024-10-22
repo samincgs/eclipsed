@@ -1,5 +1,8 @@
+import random
 import pygame
 import json
+
+from scripts.enemy import Enemy
 
 NEIGHBOR_OFFSETS = [(-2, -2), (-2, -1), (-2, 0), (-2, 1), (-2, 2),
                     (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2),
@@ -16,6 +19,8 @@ class Tilemap:
         
         self.tilemap = {}
         self.offgrid_tiles = []
+        
+        self.load(0)
         
         # for i in range(25):
         #     self.tilemap[str(i) + ';6'] = {'type': 'bricks', 'variant': 1, 'pos': [i, 6]}

@@ -5,7 +5,6 @@ import random
 from scripts.entities import Player
 from scripts.enemy import Enemy
 from scripts.tilemap import Tilemap
-from scripts.menu import Menu
 from scripts.asset_manager import AssetManager
 
 class Game:
@@ -15,9 +14,7 @@ class Game:
         self.screen = pygame.display.set_mode((900, 600))
         self.display = pygame.Surface((300, 200)) # 25/ 16 screen
         self.clock = pygame.time.Clock()
-        
-        self.main_menu = Menu(self, 'main')
-        
+                
         self.assets = AssetManager().load_assets
            
         self.player = Player(self, (50, 50), self.assets['player/'].img.get_size())
@@ -25,14 +22,10 @@ class Game:
         self.tilemap = Tilemap(self, tile_size=12)
                 
         self.movement = [False, False]
-        
         self.scroll = [0, 0]
-        
         self.projectiles = []
         self.enemies = []
         self.stars = []
-         
-        self.tilemap.load(0)
         
         for entity in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
             if entity['variant'] == 0:
@@ -45,12 +38,13 @@ class Game:
             star_x = (random.random() * self.display.get_width())
             star_y = (random.random() * self.display.get_height()) 
             self.stars.append([(star_x, star_y), random.choice(self.assets['particles/star'])])
-
+    
+    
     def draw_ui(self, surf):
         self.assets['small_font'].render(surf, 'Health: ' + str(self.player.health), (3, 5))
         self.assets['small_font'].render(surf, 'FPS: ' + str(int(self.clock.get_fps())), (surf.get_width() - 30 , 5))
-        rect_width = 22
-        rect_height = 22
+        rect_width = 21
+        rect_height = 21
         draw_rect = pygame.Rect(11 - rect_width // 2, surf.get_height() - 11 - rect_height // 2, rect_width, rect_height)
         pygame.draw.rect(surf, (255, 255, 255), draw_rect, 3, 5)
         surf.blit(self.assets['gun_ui'], (draw_rect.centerx - self.assets['gun_ui'].get_width() // 2, draw_rect.centery - self.assets['gun_ui'].get_height() // 2))
@@ -93,7 +87,7 @@ class Game:
                     if enemy.rect().collidepoint(projectile[0]):
                         enemy.health -= 1
                         self.projectiles.remove(projectile)
-                if projectile[2] > 90: # remove the projectile after it reaches 3 secs #TODO: fix so bullet is removed after it leaves the screen
+                if projectile[2] > 75: # remove the projectile after it reaches 3 secs #TODO: fix so bullet is removed after it leaves the screen
                     self.projectiles.remove(projectile)
                 
             for event in pygame.event.get():
