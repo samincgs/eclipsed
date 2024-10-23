@@ -89,6 +89,8 @@ class Player(PhysicsEntity):
         self.shoot_time = 0
         
         self.dashing = 0
+        
+        self.damage_cooldown = 0
     
     def jump(self):
         if self.jumps:
@@ -141,6 +143,9 @@ class Player(PhysicsEntity):
                 self.velocity[0] = max(self.velocity[0] - 0.5, 0)
             else:
                 self.velocity[0] = min(self.velocity[0] + 0.5, 0) 
+                
+        if self.damage_cooldown:
+            self.damage_cooldown -=1
                 
             
             

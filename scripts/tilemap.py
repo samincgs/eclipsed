@@ -18,6 +18,7 @@ NEIGHBOR_OFFSETS = [(-2, -2), (-2, -1), (-2, 0), (-2, 1), (-2, 2),
                     (0, -2), (0, -1), (0, 0), (0, 1), (0, 2),
                     (1, -2), (1, -1), (1, 0), (1, 1), (1, 2),
                     (2, -2), (2, -1), (2, 0), (2, 1), (2, 2)]
+
 PHYSICS_TILES = {'bricks'}
 TILE_TYPES = {'bricks'}
 
@@ -39,7 +40,6 @@ class Tilemap:
     def extract(self, id_pairs, keep=True):
         matches = []
         
-        
         for tile in self.offgrid_tiles.copy():
             if (tile['type'], tile['variant']) in id_pairs:
                 matches.append(tile)
@@ -58,9 +58,7 @@ class Tilemap:
     
                 
         return matches
-                
-                
-    
+
     def tiles_around(self, pos):
         tiles = []
         tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))

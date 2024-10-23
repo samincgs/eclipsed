@@ -6,6 +6,7 @@
 - Create a minimap to showcase where player is on the map
 - Create a Main Menu
 - Code player death
+- Make lanterns glow
 
 # PIXEL ART
 - Create pixel art for player animations

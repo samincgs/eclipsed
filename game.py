@@ -7,12 +7,13 @@ from scripts.entities import Player
 from scripts.enemy import Enemy
 from scripts.tilemap import Tilemap
 from scripts.asset_manager import AssetManager
+from scripts.minimap import Minimap
 
 class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption('Eclipsed') 
-        self.screen = pygame.display.set_mode((900, 600))
+        self.screen = pygame.display.set_mode((900, 600)) # 75/50
         self.display = pygame.Surface((300, 200)) # 25/ 16 screen
         self.clock = pygame.time.Clock()
                 
@@ -21,6 +22,8 @@ class Game:
         self.player = Player(self, (50, 50), self.assets['player/'].img.get_size())
         
         self.tilemap = Tilemap(self, tile_size=12)
+        
+        # self.minimap = Minimap(self, self.tilemap)
         
         self.last_time = time.time()
           
@@ -48,9 +51,8 @@ class Game:
     def draw_ui(self, surf):
         for heart in range(self.player.health):
             surf.blit(self.assets['heart'], (5 + heart * (self.assets['heart'].get_width() + 3), 5))
-        self.assets['small_font'].render(surf, 'FPS: ' + str(int(self.clock.get_fps())), (surf.get_width() - 30 , 5))
-        rect_width = 21
-        rect_height = 21
+        # self.assets['small_font'].render(surf, 'FPS: ' + str(int(self.clock.get_fps())), (surf.get_width() - 30 , 5))
+        rect_width, rect_height = 21, 21
         draw_rect = pygame.Rect(11 - rect_width // 2, surf.get_height() - 11 - rect_height // 2, rect_width, rect_height)
         pygame.draw.rect(surf, (255, 255, 255), draw_rect, 3, 5)
         surf.blit(self.assets['gun_ui'], (draw_rect.centerx - self.assets['gun_ui'].get_width() // 2, draw_rect.centery - self.assets['gun_ui'].get_height() // 2))
@@ -76,6 +78,8 @@ class Game:
  
             self.player.update(self.tilemap, movement=(self.movement[0] - self.movement[1], 0))
             self.player.render(self.display, offset=render_scroll)
+            
+            # self.minimap.render(self.display, offset=render_scroll)
             
             self.draw_ui(self.display)
             
