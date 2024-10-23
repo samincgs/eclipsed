@@ -5,8 +5,8 @@ from .entities import PhysicsEntity
 class Enemy(PhysicsEntity):
     def __init__(self, game, e_type, pos, size):
         super().__init__(game, e_type, pos, size)
-        self.aggro_radius = (120, 30)
-        self.acceleration = 0.5
+        self.aggro_radius = (120, 40)
+        self.acceleration = 0.6
         self.max_health = 3
         self.health = self.max_health
         self.killed = False
@@ -32,7 +32,7 @@ class Enemy(PhysicsEntity):
             if random.random() < 0.05 and not self.jumped:
                 self.jumped = 160
                 self.velocity[1] = -2.5            
-            if dis[0] >= 0:
+            if dis[0] > 0:
                 self.velocity[0] = self.acceleration 
             elif dis[0] < 0:
                 self.velocity[0] = -self.acceleration 

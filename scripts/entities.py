@@ -101,6 +101,7 @@ class Player(PhysicsEntity):
                 self.dashing = -40
             else:
                 self.dashing = 40
+            self.jumps = 0
                  
     def shoot(self):
         bullet_dis = 4

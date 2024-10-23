@@ -1,14 +1,16 @@
 # CODING
 - Add delta time for frame rate independence
-- Add dash animation for player while dashing
-- Code enemy ai (slimes)
+- Add dash animation/particle effect for player while dashing
 - Make projectile bounce off the walls and create a spark
-- Add autotile functionality to the tilemap editor
+- Create particles for bullet explosion/kill
+- Create a minimap to showcase where player is on the map
+- Create a Main Menu
+- Code player death
 
 # PIXEL ART
 - Create pixel art for player animations
 - Create pixel art for enemies (bats, skeletons)
 - Create pixel art for enemy animations
 - Create pixel art decors
-- Create particles for bullet explosion/kill
 - FIX player walking animation
+- FIX slime animations

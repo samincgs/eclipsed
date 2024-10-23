@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import time
 
 from scripts.entities import Player
 from scripts.enemy import Enemy
@@ -20,19 +21,23 @@ class Game:
         self.player = Player(self, (50, 50), self.assets['player/'].img.get_size())
         
         self.tilemap = Tilemap(self, tile_size=12)
-                
+        
+        self.last_time = time.time()
+          
         self.movement = [False, False]
         self.scroll = [0, 0]
         self.projectiles = []
         self.enemies = []
         self.stars = []
+                
+        self.tilemap.load(0)
         
-        for entity in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
+        for entity in self.tilemap.extract([('spawners', 0), ('spawners', 1)], keep=False):
             if entity['variant'] == 0:
                 self.player.pos = entity['pos']
             else:
                 self.enemies.append(Enemy(self, 'slime', entity['pos'], self.assets['slime/'].img.get_size()))
-        
+                        
         # TODO: fix star position and allows it to move parallax to the scroll        
         for _ in range(40):
             star_x = (random.random() * self.display.get_width())
@@ -41,7 +46,8 @@ class Game:
     
     
     def draw_ui(self, surf):
-        self.assets['small_font'].render(surf, 'Health: ' + str(self.player.health), (3, 5))
+        for heart in range(self.player.health):
+            surf.blit(self.assets['heart'], (5 + heart * (self.assets['heart'].get_width() + 3), 5))
         self.assets['small_font'].render(surf, 'FPS: ' + str(int(self.clock.get_fps())), (surf.get_width() - 30 , 5))
         rect_width = 21
         rect_height = 21
@@ -51,6 +57,11 @@ class Game:
     
     def run(self):
         while True:
+            
+            dt = time.time() - self.last_time
+            dt *= 60
+            self.last_time = time.time()
+                            
             self.display.fill('#1e1320') # dark purple background
             
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
@@ -62,7 +73,7 @@ class Game:
                 self.display.blit(star[1], star[0])
               
             self.tilemap.render(self.display, offset=render_scroll)
-                 
+ 
             self.player.update(self.tilemap, movement=(self.movement[0] - self.movement[1], 0))
             self.player.render(self.display, offset=render_scroll)
             
@@ -87,9 +98,9 @@ class Game:
                     if enemy.rect().collidepoint(projectile[0]):
                         enemy.health -= 1
                         self.projectiles.remove(projectile)
-                if projectile[2] > 75: # remove the projectile after it reaches 3 secs #TODO: fix so bullet is removed after it leaves the screen
+                if projectile[2] > 120:  #TODO: fix so bullet is removed after it leaves the screen
                     self.projectiles.remove(projectile)
-                
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -112,13 +123,12 @@ class Game:
                     if event.key == pygame.K_RIGHT:
                         self.movement[0] = False
                     if event.key == pygame.K_LEFT:
-                        self.movement[1] = False
-            
+                        self.movement[1] = False       
+               
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
             self.clock.tick(60)
-            
-                       
+                      
 if __name__ == '__main__':
     game = Game()
     game.run()

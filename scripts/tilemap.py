@@ -1,16 +1,25 @@
-import random
 import pygame
 import json
 
-from scripts.enemy import Enemy
+AUTOTILE_CONFIG = {
+    tuple(sorted([(1,0),(0, 1)])): 0,
+    tuple(sorted([(-1, 0), (1, 0), (0, 1)])): 1,
+    tuple(sorted([(-1, 0), (0, 1)])): 2,
+    tuple(sorted([(-1, 0),(0, 1), (0, -1)])): 3,
+    tuple(sorted([(-1, 0), (0, -1)])): 4,
+    tuple(sorted([(-1, 0), (0, -1), (1, 0)])): 5,
+    tuple(sorted([(1, 0), (0, -1)])): 6,
+    tuple(sorted([(1, 0), (0, -1), (0, 1)])): 7,
+    tuple(sorted([(-1, 0), (0, -1), (0, 1), (1, 0)])): 8,
+}
 
 NEIGHBOR_OFFSETS = [(-2, -2), (-2, -1), (-2, 0), (-2, 1), (-2, 2),
                     (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2),
                     (0, -2), (0, -1), (0, 0), (0, 1), (0, 2),
                     (1, -2), (1, -1), (1, 0), (1, 1), (1, 2),
                     (2, -2), (2, -1), (2, 0), (2, 1), (2, 2)]
-
 PHYSICS_TILES = {'bricks'}
+TILE_TYPES = {'bricks'}
 
 class Tilemap:
     def __init__(self, game, tile_size=12):
@@ -19,8 +28,7 @@ class Tilemap:
         
         self.tilemap = {}
         self.offgrid_tiles = []
-        
-        self.load(0)
+    
         
         # for i in range(25):
         #     self.tilemap[str(i) + ';6'] = {'type': 'bricks', 'variant': 1, 'pos': [i, 6]}
@@ -28,8 +36,15 @@ class Tilemap:
         #     self.tilemap['2;'+ str(i)] = {'type': 'bricks', 'variant': 1, 'pos': [2, i]}
             
     
-    def extract(self, id_pairs, keep=False):
+    def extract(self, id_pairs, keep=True):
         matches = []
+        
+        
+        for tile in self.offgrid_tiles.copy():
+            if (tile['type'], tile['variant']) in id_pairs:
+                matches.append(tile)
+                if not keep:
+                    self.offgrid_tiles.remove(tile)
         
         for loc in self.tilemap.copy():
             tile = self.tilemap[loc]
@@ -40,12 +55,7 @@ class Tilemap:
                 matches.append(tile)
                 if not keep:
                     del self.tilemap[loc]
-        
-        for tile in self.offgrid_tiles.copy():
-            if (tile['type'], tile['variant']) in id_pairs:
-                matches.append(tile)
-                if not keep:
-                    self.offgrid_tiles.remove(tile)
+    
                 
         return matches
                 
@@ -79,14 +89,30 @@ class Tilemap:
         self.offgrid_tiles = tile_data['offgrid']
         self.tile_size = tile_data['tile_size']
         f.close()
+    
+    def autotile(self):
+        for loc in self.tilemap:
+            tile = self.tilemap[loc]
+            neighbors = set()
+            for offset in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                check_loc = str(tile['pos'][0] + offset[0]) + ';' + str(tile['pos'][1] + offset[1])
+                if check_loc in self.tilemap:
+                    if tile['type'] == self.tilemap[check_loc]['type']:
+                        neighbors.add(offset)
+            neighbors = tuple(sorted(neighbors))
+            if neighbors in AUTOTILE_CONFIG:
+                tile['variant'] = AUTOTILE_CONFIG[neighbors]
+            
            
     def render(self, surf, offset=(0, 0)):
-        
         # off grid tiles
         for tile in self.offgrid_tiles:
-            surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))
+            surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))                        
         
-        # on grid tiles
+        # on grid tiles TODO: change it to rendering the tiles based on players current position on the screen (optimize)
         for loc in self.tilemap:
             tile = self.tilemap[loc]
             surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
+        
+        
+        

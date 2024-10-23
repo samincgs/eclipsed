@@ -10,7 +10,7 @@ class AssetManager:
         self.load_tiles()
         self.load_font()
         self.load_misc()
-    
+        
     @property
     def load_assets(self):
         return self.assets
@@ -34,6 +34,7 @@ class AssetManager:
         self.assets['gun'] = load_image('gun.png')
         self.assets['gun_ui'] = load_image('gun_ui.png')
         self.assets['projectile'] = load_image('projectile.png')
+        self.assets['heart'] = load_image('heart.png')
         self.assets['particles/star'] = load_images('particles/stars')
             
     def __repr__(self):

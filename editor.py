@@ -107,6 +107,8 @@ class Editor:
                         self.ongrid = not self.ongrid
                     if event.key == pygame.K_o:
                         self.tilemap.save(0)
+                    if event.key == pygame.K_t:
+                        self.tilemap.autotile()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_d:
                         self.movement[0] = False
