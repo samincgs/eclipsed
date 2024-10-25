@@ -1,6 +1,5 @@
 # CODING
 - Add delta time for frame rate independence
-- Add dash animation/particle effect for player while dashing
 - Make projectile bounce off the walls and create a spark
 - Create particles for bullet explosion/kill
 - Create a minimap to showcase where player is on the map

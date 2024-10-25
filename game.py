@@ -23,7 +23,7 @@ class Game:
         
         self.tilemap = Tilemap(self, tile_size=12)
         
-        # self.minimap = Minimap(self, self.tilemap)
+        self.minimap = Minimap(self, self.tilemap)
         
         self.last_time = time.time()
           
@@ -79,7 +79,7 @@ class Game:
             self.player.update(self.tilemap, movement=(self.movement[0] - self.movement[1], 0))
             self.player.render(self.display, offset=render_scroll)
             
-            # self.minimap.render(self.display, offset=render_scroll)
+            self.minimap.render(self.display, offset=render_scroll)
             
             self.draw_ui(self.display)
             

@@ -90,7 +90,7 @@ class Player(PhysicsEntity):
         self.shoot_time = 0
         
         self.dashing = 0
-        
+        self.silhouettes = []
         self.damage_cooldown = 0
     
     def jump(self):
@@ -132,26 +132,45 @@ class Player(PhysicsEntity):
         else:
             self.set_action()
         
+        if abs(self.dashing) > 25:
+            silhouette = {
+                'pos': self.pos.copy(),
+                'img': self.game.assets[self.type + '/' + self.action].img.copy(),
+                'alpha': 150
+            }
+            self.silhouettes.append(silhouette)
+        
         if self.dashing > 0:
             self.dashing = max(self.dashing - 1, 0)
         else:
             self.dashing = min(self.dashing + 1, 0)
             
         if abs(self.dashing) > 30:
-            self.velocity[0] = abs(self.dashing) / self.dashing * 4
+            self.velocity[0] = abs(self.dashing) / self.dashing * 3.2
         else:
             if self.dashing > 0:
                 self.velocity[0] = max(self.velocity[0] - 0.5, 0)
             else:
                 self.velocity[0] = min(self.velocity[0] + 0.5, 0) 
+                
+        for silhouette in self.silhouettes.copy():
+            silhouette['alpha'] -= 10
+            if silhouette['alpha'] <= 0:
+                self.silhouettes.remove(silhouette)
                  
         if self.damage_cooldown:
             self.damage_cooldown -=1
                 
                 
     def render(self, surf, offset=(0,0)):
+        
         super().render(surf, offset=offset)
-            
+        
+        for silhouette in self.silhouettes:
+           silhouette_image = silhouette['img'].copy() 
+           silhouette_image.set_alpha(silhouette['alpha'])
+           surf.blit(silhouette_image, (silhouette['pos'][0] - offset[0], silhouette['pos'][1] - offset[1]))
+        
         gun = self.game.assets['gun'] # TODO: fix gun slightly jittering when falling down from platform
         if self.flip: 
             surf.blit(pygame.transform.flip(gun, self.flip, False), (self.rect().centerx - gun.get_width() - offset[0], self.rect().centery - offset[1]))
