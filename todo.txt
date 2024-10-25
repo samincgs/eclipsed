@@ -9,7 +9,6 @@
 - Make lanterns glow
 
 # PIXEL ART
-- Create pixel art for player animations
 - Create pixel art for enemies (bats, skeletons)
 - Create pixel art for enemy animations
 - Create pixel art decors

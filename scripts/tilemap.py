@@ -107,10 +107,13 @@ class Tilemap:
         for tile in self.offgrid_tiles:
             surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))                        
         
-        # on grid tiles TODO: change it to rendering the tiles based on players current position on the screen (optimize)
-        for loc in self.tilemap:
-            tile = self.tilemap[loc]
-            surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
+        # on grid tiles 
+        for x in range(offset[0] // self.tile_size, (offset[0] + surf.get_width()) // self.tile_size + 1): # of by 1 to get everything
+            for y in range(offset[1] // self.tile_size, (offset[1] + surf.get_height()) // self.tile_size + 1):
+                loc = str(x) + ';' + str(y)
+                if loc in self.tilemap:
+                    tile = self.tilemap[loc]
+                    surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))   
         
         
         

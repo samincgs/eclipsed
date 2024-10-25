@@ -1,4 +1,5 @@
 import pygame
+from .utils import palette_swap
 
 
 class PhysicsEntity:
@@ -135,25 +136,24 @@ class Player(PhysicsEntity):
             self.dashing = max(self.dashing - 1, 0)
         else:
             self.dashing = min(self.dashing + 1, 0)
-        
-        if abs(self.dashing) > 35:
-            self.velocity[0] = abs(self.dashing) / self.dashing * 5
+            
+        if abs(self.dashing) > 30:
+            self.velocity[0] = abs(self.dashing) / self.dashing * 4
         else:
             if self.dashing > 0:
                 self.velocity[0] = max(self.velocity[0] - 0.5, 0)
             else:
                 self.velocity[0] = min(self.velocity[0] + 0.5, 0) 
-                
+                 
         if self.damage_cooldown:
             self.damage_cooldown -=1
                 
-            
-            
+                
     def render(self, surf, offset=(0,0)):
         super().render(surf, offset=offset)
-        
+            
         gun = self.game.assets['gun'] # TODO: fix gun slightly jittering when falling down from platform
-        if self.flip:
+        if self.flip: 
             surf.blit(pygame.transform.flip(gun, self.flip, False), (self.rect().centerx - gun.get_width() - offset[0], self.rect().centery - offset[1]))
         else:
             surf.blit(gun, (self.rect().centerx - offset[0], self.rect().centery - offset[1]))

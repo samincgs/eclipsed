@@ -35,6 +35,7 @@ class AssetManager:
         self.assets['gun_ui'] = load_image('gun_ui.png')
         self.assets['projectile'] = load_image('projectile.png')
         self.assets['heart'] = load_image('heart.png')
+        self.assets['minimap'] = load_image('minimap.png')
         self.assets['particles/star'] = load_images('particles/stars')
             
     def __repr__(self):
