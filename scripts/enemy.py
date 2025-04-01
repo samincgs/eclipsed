@@ -16,7 +16,9 @@ class Enemy(PhysicsEntity):
     def update(self, tilemap, movement=(0, 0)):
          
         super().update(tilemap, movement=movement)
+        
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
+        
         if dis[0] < 0:
             self.flip = True
         elif dis[0] > 0:
@@ -26,6 +28,7 @@ class Enemy(PhysicsEntity):
             if not self.game.player.damage_cooldown:
                 self.game.player.health -= 1
                 self.game.player.damage_cooldown = 60
+            return
                 
         if abs(dis[1]) < self.aggro_radius[1] and abs(dis[0]) < self.aggro_radius[0]:
             if random.random() < 0.05 and not self.jumped:

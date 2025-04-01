@@ -4,8 +4,7 @@
 - Create particles for bullet explosion/kill
 - Create a minimap to showcase where player is on the map
 - Create a Main Menu
-- Code player death
-- Make lanterns glow
+- Code player death and create level transition
 
 # PIXEL ART
 - Create pixel art for enemies (bats, skeletons)

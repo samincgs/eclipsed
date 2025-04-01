@@ -1,6 +1,8 @@
-from .utils import load_image, load_images
+from .utils import load_img, load_imgs
 from .animation import Animation
 from .font import Font
+
+IMG_PATH = 'data/images/'
 
 class AssetManager:
     def __init__(self):
@@ -16,27 +18,27 @@ class AssetManager:
         return self.assets
         
     def load_sprites(self):
-        self.assets['player/'] =  Animation(images=[load_image('entities/player/0.png')])
-        self.assets['player/jump'] =  Animation(load_images('entities/player/jump'))
-        self.assets['player/walk'] = Animation(load_images('entities/player/walk'), img_dur=5)
-        self.assets['slime/'] = Animation(images=[load_image('entities/enemy/slime/0.png')])
+        self.assets['player/'] =  Animation(images=[load_img(IMG_PATH + 'entities/player/0.png', (0, 0, 0))])
+        self.assets['player/jump'] =  Animation(images=load_imgs(IMG_PATH + 'entities/player/jump',(0, 0, 0)))
+        self.assets['player/walk'] = Animation(images=load_imgs(IMG_PATH + 'entities/player/walk', (0, 0, 0)))
+        self.assets['slime/'] = Animation(images=[load_img(IMG_PATH + 'entities/enemy/slime/0.png', (0, 0, 0))])
         
-    def load_tiles(self):
-        self.assets['bricks'] =  load_images('tiles/bricks')
-        self.assets['decor'] = load_images('tiles/decor')
-        self.assets['spawners'] = load_images('tiles/spawners')
+    def load_tiles(self): 
+        self.assets['bricks'] =  load_imgs(IMG_PATH +'tiles/bricks', (0, 0, 0))
+        self.assets['decor'] = load_imgs(IMG_PATH +'tiles/decor', (0, 0, 0))
+        self.assets['spawners'] = load_imgs(IMG_PATH +'tiles/spawners', (0, 0, 0))
         
     def load_font(self):
-        self.assets['small_font'] = Font('data/fonts/small_font.png', (255, 255, 255))
-        self.assets['large_font'] = Font('data/fonts/large_font.png')
+        self.assets['small_font'] = Font('data/fonts/main_font.png', (255, 255, 255))
+        # self.assets['large_font'] = Font('data/fonts/large_font.png')
         
     def load_misc(self):
-        self.assets['gun'] = load_image('gun.png')
-        self.assets['gun_ui'] = load_image('gun_ui.png')
-        self.assets['projectile'] = load_image('projectile.png')
-        self.assets['heart'] = load_image('heart.png')
-        self.assets['minimap'] = load_image('minimap.png')
-        self.assets['particles/star'] = load_images('particles/stars')
+        self.assets['gun'] = load_img(IMG_PATH +'gun.png', (0, 0, 0))
+        self.assets['gun_ui'] = load_img(IMG_PATH +'gun_ui.png', (0, 0, 0))
+        self.assets['projectile'] = load_img(IMG_PATH +'projectile.png', (0, 0, 0))
+        self.assets['heart'] = load_img(IMG_PATH +'heart.png', (0, 0, 0))
+        self.assets['minimap'] = load_img(IMG_PATH +'minimap.png', (0, 0, 0))
+        self.assets['particles/star'] = load_imgs(IMG_PATH +'particles/stars', (0, 0, 0))
             
     def __repr__(self):
         return repr(self.assets)

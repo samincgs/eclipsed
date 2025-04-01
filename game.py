@@ -7,7 +7,7 @@ from scripts.entities import Player
 from scripts.enemy import Enemy
 from scripts.tilemap import Tilemap
 from scripts.asset_manager import AssetManager
-from scripts.minimap import Minimap
+
 
 class Game:
     def __init__(self):
@@ -19,11 +19,10 @@ class Game:
                 
         self.assets = AssetManager().load_assets
            
-        self.player = Player(self, (50, 50), self.assets['player/'].img.get_size())
+        self.player = Player(self, (450, 50), self.assets['player/'].img.get_size())
         
         self.tilemap = Tilemap(self, tile_size=12)
         
-        self.minimap = Minimap(self, self.tilemap)
         
         self.last_time = time.time()
           
@@ -33,14 +32,14 @@ class Game:
         self.enemies = []
         self.stars = []
                 
-        self.tilemap.load(0)
+        self.tilemap.load_map('data/maps/test.json')
         
         for entity in self.tilemap.extract([('spawners', 0), ('spawners', 1)], keep=False):
             if entity['variant'] == 0:
                 self.player.pos = entity['pos']
             else:
                 self.enemies.append(Enemy(self, 'slime', entity['pos'], self.assets['slime/'].img.get_size()))
-                        
+                                        
         # TODO: fix star position and allows it to move parallax to the scroll        
         for _ in range(40):
             star_x = (random.random() * self.display.get_width())
@@ -69,18 +68,16 @@ class Game:
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
-            
+                        
             # parallax_effect = 0.5
             for star in self.stars:
                 self.display.blit(star[1], star[0])
               
-            self.tilemap.render(self.display, offset=render_scroll)
+            self.tilemap.render_all(self.display, offset=render_scroll)
  
             self.player.update(self.tilemap, movement=(self.movement[0] - self.movement[1], 0))
             self.player.render(self.display, offset=render_scroll)
-            
-            self.minimap.render(self.display, offset=render_scroll)
-            
+                        
             self.draw_ui(self.display)
             
             for enemy in self.enemies.copy():

@@ -33,9 +33,9 @@ class PhysicsEntity:
         
         
         # physics
-        self.pos[0] += frame_movement[0]
+        self.pos[0] += frame_movement[0] * 1.2
         entity_rect = self.rect()
-        for rect in tilemap.physics_rects_around(self.pos):
+        for rect in tilemap.get_nearby_rects(self.pos):
             if entity_rect.colliderect(rect):
                 if frame_movement[0] > 0:
                     entity_rect.right = rect.left
@@ -45,9 +45,9 @@ class PhysicsEntity:
                     self.collisions['left'] = True
                 self.pos[0] = entity_rect.x
                       
-        self.pos[1] += frame_movement[1]
+        self.pos[1] += frame_movement[1] * 1.2
         entity_rect = self.rect()
-        for rect in tilemap.physics_rects_around(self.pos):
+        for rect in tilemap.get_nearby_rects(self.pos):
             if entity_rect.colliderect(rect):
                 if frame_movement[1] > 0:
                     entity_rect.bottom = rect.top
@@ -90,7 +90,7 @@ class Player(PhysicsEntity):
         self.shoot_time = 0
         
         self.dashing = 0
-        self.silhouettes = []
+        self.ghost_dashes = []
         self.damage_cooldown = 0
     
     def jump(self):
@@ -136,9 +136,9 @@ class Player(PhysicsEntity):
             silhouette = {
                 'pos': self.pos.copy(),
                 'img': self.game.assets[self.type + '/' + self.action].img.copy(),
-                'alpha': 150
+                'alpha': 130
             }
-            self.silhouettes.append(silhouette)
+            self.ghost_dashes.append(silhouette)
         
         if self.dashing > 0:
             self.dashing = max(self.dashing - 1, 0)
@@ -152,12 +152,11 @@ class Player(PhysicsEntity):
                 self.velocity[0] = max(self.velocity[0] - 0.5, 0)
             else:
                 self.velocity[0] = min(self.velocity[0] + 0.5, 0) 
-                
-        for silhouette in self.silhouettes.copy():
-            silhouette['alpha'] -= 10
-            if silhouette['alpha'] <= 0:
-                self.silhouettes.remove(silhouette)
-                 
+        
+        for dash in self.ghost_dashes.copy():
+            dash['alpha'] -= 10
+            if dash['alpha'] <= 0:
+                self.ghost_dashes.remove(dash)
         if self.damage_cooldown:
             self.damage_cooldown -=1
                 
@@ -166,11 +165,11 @@ class Player(PhysicsEntity):
         
         super().render(surf, offset=offset)
         
-        for silhouette in self.silhouettes:
-           silhouette_image = silhouette['img'].copy() 
-           silhouette_image.set_alpha(silhouette['alpha'])
-           surf.blit(silhouette_image, (silhouette['pos'][0] - offset[0], silhouette['pos'][1] - offset[1]))
-        
+        for dash in self.ghost_dashes:
+            img = dash['img'].copy()
+            img.set_alpha(dash['alpha'])
+            surf.blit(img, (dash['pos'][0] - offset[0], dash['pos'][1] - offset[1]))
+    
         gun = self.game.assets['gun'] # TODO: fix gun slightly jittering when falling down from platform
         if self.flip: 
             surf.blit(pygame.transform.flip(gun, self.flip, False), (self.rect().centerx - gun.get_width() - offset[0], self.rect().centery - offset[1]))
